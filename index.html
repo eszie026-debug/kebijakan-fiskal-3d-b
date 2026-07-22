@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kebijakan Fiskal - 3D Presentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #050505;
+            color: #ffffff;
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        #webgl-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        /* UI Overlay Layer */
+        .ui-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 2.5rem 3rem;
+        }
+
+        .interactive {
+            pointer-events: auto;
+        }
+
+        /* Header Navigation */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            padding-bottom: 1.2rem;
+        }
+
+        .logo {
+            font-size: 1.3rem;
+            letter-spacing: 0.25em;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            font-size: 0.95rem;
+            letter-spacing: 0.15em;
+        }
+
+        .nav-item {
+            color: #888;
+            cursor: pointer;
+            transition: color 0.3s ease;
+            text-decoration: none;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            color: #fff;
+            border-bottom: 1px solid #fff;
+        }
+
+        /* Content Area */
+        .content-container {
+            max-width: 650px;
+            z-index: 3;
+        }
+
+        .subtitle {
+            text-transform: uppercase;
+            letter-spacing: 0.25em;
+            font-size: 1rem;
+            color: #888;
+            margin-bottom: 0.8rem;
+            font-weight: 500;
+        }
+
+        .title {
+            font-size: 3.5rem;
+            font-weight: 400;
+            line-height: 1.1;
+            margin-bottom: 2rem;
+            letter-spacing: -0.02em;
+        }
+
+        /* Grid Cards */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.2rem;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 1.4rem 1.6rem;
+            border-radius: 6px;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .card-num {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.4rem;
+            color: #e0e0e0;
+        }
+
+        .card-desc {
+            font-size: 0.95rem;
+            color: #aaa;
+            line-height: 1.45;
+        }
+
+        /* Footer Controls */
+        footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            padding-top: 1.2rem;
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 0.8rem 1.6rem;
+            font-size: 0.9rem;
+            letter-spacing: 0.15em;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background 0.3s ease;
+            text-transform: uppercase;
+        }
+
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .slide-counter {
+            font-size: 1.1rem;
+            letter-spacing: 0.2em;
+            margin-left: 1rem;
+            color: #ccc;
+        }
+
+        .hint {
+            font-size: 0.85rem;
+            color: #666;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+        }
+
+        /* Media Queries untuk Layar Tablet dan HP */
+        @media (max-width: 900px) {
+            .ui-layer {
+                padding: 1.8rem 2rem;
+            }
+            .title {
+                font-size: 2.8rem;
+            }
+            .content-container {
+                max-width: 100%;
+            }
+            .cards-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            .card {
+                padding: 1.2rem 1.4rem;
+            }
+            .hint {
+                display: none;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .title {
+                font-size: 2.2rem;
+            }
+            .nav-links {
+                font-size: 0.8rem;
+                gap: 1rem;
+            }
+            .logo {
+                font-size: 1rem;
+            }
+        }
+    </style>
+    <!-- Three.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+
+    <div id="webgl-container"></div>
+
+    <div class="ui-layer">
+        <header class="interactive">
+            <div class="logo">EKONOMI / FISKAL</div>
+            <div class="nav-links">
+                <a href="#" class="nav-item active">SLIDE VIEW</a>
+                <a href="#" class="nav-item">KEBIJAKAN MAKRO</a>
+                <a href="#" class="nav-item">2026 EDITION</a>
+            </div>
+        </header>
+
+        <main class="content-container interactive">
+            <div class="subtitle">PILAR UTAMA</div>
+            <h1 class="title">4 Instrumen Fiskal</h1>
+
+            <div class="cards-grid">
+                <div class="card">
+                    <div class="card-num">1. Pajak</div>
+                    <div class="card-desc">Sumber pendapatan terbesar kas negara.</div>
+                </div>
+                <div class="card">
+                    <div class="card-num">2. Belanja Negara</div>
+                    <div class="card-desc">Alokasi pembangunan infrastruktur & operasional.</div>
+                </div>
+                <div class="card">
+                    <div class="card-num">3. Subsidi & Bansos</div>
+                    <div class="card-desc">Bantuan langsung bagi warga & dukungan UMKM.</div>
+                </div>
+                <div class="card">
+                    <div class="card-num">4. Utang Publik</div>
+                    <div class="card-desc">Penerbitan SBN untuk menutup defisit anggaran.</div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="interactive">
+            <div class="controls">
+                <button class="btn" id="prevBtn">&larr; BACK</button>
+                <button class="btn" id="nextBtn">NEXT &rarr;</button>
+                <span class="slide-counter"><strong style="color: #fff;">08</strong> / 10</span>
+            </div>
+            <div class="hint">[ GUNAKAN TOMBOL / PANAH KEYBOARD ]</div>
+        </footer>
+    </div>
+
+    <script>
+        // --- THREE.JS 3D SCENE SETUP ---
+        const container = document.getElementById('webgl-container');
+        const scene = new THREE.Scene();
+        
+        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(0, 0, 10);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        container.appendChild(renderer.domElement);
+
+        // Group model agar gampang diposisikan
+        const pillarGroup = new THREE.Group();
+
+        // 4 Bar Pillars (Visualisasi Wireframe)
+        const heights = [3.8, 3.2, 2.5, 2.0];
+        const radius = 0.35;
+        
+        heights.forEach((h, index) => {
+            const geometry = new THREE.CylinderGeometry(radius, radius, h, 24, 16);
+            const wireframe = new THREE.WireframeGeometry(geometry);
+            const line = new THREE.LineSegments(wireframe);
+            line.material.color.setHex(0xffffff);
+            line.material.opacity = 0.75;
+            line.material.transparent = true;
+
+            // Atur posisi sejajar
+            line.position.x = (index * 0.95) - 1.4;
+            line.position.y = (h / 2) - 2;
+            
+            pillarGroup.add(line);
+        });
+
+        // Geser posisi 3D pillars agak ke kanan layar agar tidak tertutup teks
+        pillarGroup.position.x = 2.2;
+        scene.add(pillarGroup);
+
+        // Animation Loop
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            // Rotasi halus model 3D
+            pillarGroup.rotation.y += 0.006;
+            
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Responsive Resize Handler
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            
+            // Sesuaikan posisi 3D di layar HP
+            if (window.innerWidth < 900) {
+                pillarGroup.position.x = 0;
+                pillarGroup.position.y = 0.5;
+                pillarGroup.scale.set(0.75, 0.75, 0.75);
+            } else {
+                pillarGroup.position.x = 2.2;
+                pillarGroup.position.y = 0;
+                pillarGroup.scale.set(1, 1, 1);
+            }
+        });
+
+        // Trigger resize awal untuk memastikan posisi di tablet/HP langsung pas
+        window.dispatchEvent(new Event('resize'));
+    </script>
+</body>
+</html>
+
